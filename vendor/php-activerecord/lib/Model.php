@@ -1096,12 +1096,18 @@ class Model
 	public function set_timestamps()
 	{
 		$now = date('Y-m-d H:i:s');
-
-		if (isset($this->updated_at))
+		try {
 			$this->updated_at = $now;
+		} catch (UndefinedPropertyException $e) {
+				
+		}
+		try {
+			if($this->is_new_record()) {
+				$this->created_at = $now;
+			}
+		} catch (UndefinedPropertyException $e) {
+		}
 
-		if (isset($this->created_at) && $this->is_new_record())
-			$this->created_at = $now;
 	}
 
 	/**

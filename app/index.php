@@ -15,7 +15,7 @@ $app->setName('appname');
  * Automatic login based on user cookie
  * uncomment when user model has been defined
  */
-
+$currentUser = null;
 if($userid = $app->getEncryptedCookie('user_id')) {
 	/*if(User::exists($userid)) {
 		$currentUser = User::find($userid);

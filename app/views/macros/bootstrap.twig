@@ -1,5 +1,4 @@
-{# bootstrap specific macros
-#}
+{# bootstrap specific macros#}
 {% macro alert(message, type, style) %}
 <div class="alert alert-{{ type|default('success') }}">
 	<span style="{{ style|default('font-weight: bold;') }}">

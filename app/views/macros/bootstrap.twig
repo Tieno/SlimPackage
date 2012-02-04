@@ -1,15 +1,17 @@
-{# bootstrap specific macros#}
+{# bootstrap specific macros #}
+
 {% macro alert(message, type, style) %}
-<div class="alert alert-{{ type|default('success') }}">
-	<span style="{{ style|default('font-weight: bold;') }}">
-	{{ message }}
-	</span>
-</div>
+	{% if message != '' %}
+		<div class="alert alert-{{ type|default('success') }}">
+			<span style="{{ style|default('font-weight: bold;') }}">
+			{{ message }}
+			</span>
+		</div
+	{% endif %}
 {% endmacro %}
 
 {% macro label(message, type) %}
-	{% if message == '' %}
-	{% else %}
+	{% if message != '' %}
 	<span class="label label-{{ type }}">{{ message }}</span>
 	{% endif %}
 {% endmacro %}

@@ -65,6 +65,9 @@
           {% endblock sidebar %}
         
         <div class="span10">
+        {% if flash %}
+        	{% include "base/components/flash.twig" %}
+        {% endif %}
         {% block content %}
           <div class="hero-unit">
             <h1>Hello, world!</h1>

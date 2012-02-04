@@ -1,0 +1,14 @@
+{% macro alert(message, type, style) %}
+<div class="alert alert-{{ type|default('success') }}">
+	<span style="{{ style|default('font-weight: bold;') }}">
+	{{ message }}
+	</span>
+</div>
+{% endmacro %}
+
+{% macro label(message, type) %}
+	{% if message == '' %}
+	{% else %}
+	<span class="label label-{{ type }}">{{ message }}</span>
+	{% endif %}
+{% endmacro %}

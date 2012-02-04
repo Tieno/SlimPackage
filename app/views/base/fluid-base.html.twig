@@ -12,23 +12,23 @@
     <![endif]-->
     {% use "base/javascripts.twig" %}
 	{% block javascripts %}
-	
+		{{ parent() }}
     {% endblock javascripts %}
     
     <!-- Le styles -->
     {% use "base/stylesheets.twig" %}
     
     {% block stylesheets %}
-    {{ parent() }}
-	 <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
+    	{{ parent() }}
+		 <style type="text/css">
+	      body {
+	        padding-top: 60px;
+	        padding-bottom: 40px;
+	      }
+	      .sidebar-nav {
+	        padding: 9px 0;
+	      }
+	    </style>
     {% endblock stylesheets %}
     
 
@@ -45,11 +45,13 @@
       <div class="navbar-inner">
         <div class="container-fluid">
         {% block navbar %}
-          <a class="brand" href="#">{{ app.getName() }}</a>
-          <ul class="nav">
-            <li class="active"><a href="#">Home</a></li>
-          </ul>
-          <p class="pull-right">Logged in as <a href="#">{{ currentUser.getFullName() }}</a></p>
+	          <a class="brand" href="#">{{ app.getName() }}</a>
+	          <ul class="nav">
+	            <li class="active"><a href="#">Home</a></li>
+	          </ul>
+	          {% if currentUser %}
+	          	<p class="pull-right">Logged in as <a href="#">{{ currentUser.getFullName() }}</a></p>
+	          {% endif %}
         {% endblock navbar %}
         </div>
       </div>
@@ -61,6 +63,7 @@
           {% block sidebar %}
         	{{ parent() }}
           {% endblock sidebar %}
+        
         <div class="span10">
         {% block content %}
           <div class="hero-unit">
@@ -102,6 +105,7 @@
               <p><a class="btn" href="#">View details &raquo;</a></p>
             </div><!--/span-->
          {% endblock content %}
+          
           </div><!--/row-->
         </div><!--/span-->
       </div><!--/row-->

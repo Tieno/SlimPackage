@@ -1,5 +1,5 @@
 <?php
-
+define('ROOT', __DIR__);
 /**
  * Step 1: Require the Slim PHP 5 Framework
  *

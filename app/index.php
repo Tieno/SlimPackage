@@ -1,24 +1,6 @@
 <?php
-session_start();
-require_once('app/config.php');
-
-/**
- * Step 1: Require the Slim PHP 5 Framework
- *
- * If using the default file layout, the `Slim/` directory
- * will already be on your include path. If you move the `Slim/`
- * directory elsewhere, ensure that it is added to your include path
- * or update this file path as needed.
- */
-
-
-/**
- * Step 2: Instantiate the Slim application
- *
- * Here we instantiate the Slim application with its default settings.
- * However, we could also pass a key-value array of settings.
- * Refer to the online documentation for available settings.
- */
+require_once('app/config/registry.php');
+require_once('app/config/settings.php');
 
 $app = new Slim(array(
 	'templates.path' => 'app/views/',
@@ -28,49 +10,60 @@ $app = new Slim(array(
 ));
 $app->setName('appname');
 
-//send the $currentUser to all the templates
-//$app->view()->appendData(array('currentUser' => $currentUser));
 
+/**
+ * Automatic login based on user cookie
+ * uncomment when user model has been defined
+ */
+
+if($userid = $app->getEncryptedCookie('user_id')) {
+	/*if(User::exists($userid)) {
+		$currentUser = User::find($userid);
+	} else {
+		$currentUser = null;
+	}
+	*/
+
+} else {
+	$currentUser = null;
+}
+
+/**
+ * authentication middleware for is in routes you want protected
+ * 
+ */
 //authentication
-$auth = function () use ($app) {
+$auth = function () use ($app, $currentUser) {
 	if($currentUser instanceof User) {
 		$app->config('cookies.user_id', $currentUser->id);
-		//$app->view()->appendData(array('currentUser' => $currentUser, 'fapp' => $app));
-		//$app->setEncryptedCookie('user_id', $currentUser->id);
+		$app->view()->appendData(array('currentUser' => $currentUser, 'app' => $app));
+		$app->setEncryptedCookie('user_id', $currentUser->id, "+ 30 day");
 		//$app->
 		return true; //true if authenticated, false otherwise
 	} else {
-		$app->redirect($app->urlFor('login'));
+		//uncomment if redirect
+		//$app->redirect($app->urlFor('login'));
 	}
 };
 
-foreach(glob('app/functions/*.php') as $function) {
-	include $function;
-}
-foreach(glob('app/classes/*.php') as $class) {
-	include $class;
-}
+
+/*
+ * SET some globally available view data
+ */
+$resourceUri = $_SERVER['REQUEST_URI'];
+$rootUri = $app->request()->getRootUri();
+$app->view()->appendData(
+		array('currentUser' => $currentUser,
+				'app' => $app,
+				'rootUri' => $rootUri,
+				'assetUri' => $rootUri . '/web',
+				'resourceUri' => $resourceUri
+));
 
 foreach(glob('app/controllers/*.php') as $router) {
 	include $router;
 }
 
-/**
- * Step 3: Define the Slim application routes
- *
- * Here we define several Slim application routes that respond
- * to appropriate HTTP request methods. In this example, the second
- * argument for `Slim::get`, `Slim::post`, `Slim::put`, and `Slim::delete`
- * is an anonymous function. If you are using PHP < 5.3, the
- * second argument should be any variable that returns `true` for
- * `is_callable()`. An example GET route for PHP < 5.3 is:
- *
- * $app = new Slim();
- * $app->get('/hello/:name', 'myFunction');
- * function myFunction($name) { echo "Hello, $name"; }
- *
- * The routes below work with PHP >= 5.3.
- */
 
 //GET route
 $app->get('/', function () use ($app) {

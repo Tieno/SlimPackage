@@ -8,5 +8,5 @@ define('ROOT', __DIR__);
  * directory elsewhere, ensure that it is added to your include path
  * or update this file path as needed.
  */
-require 'Slim/Slim.php';
+require 'vendor/Slim/Slim.php';
 require 'app/index.php';

@@ -31,13 +31,40 @@
  */
 
 /**
- * Stop Exception
+ * Log File Writer
  *
- * This Exception is thrown when the Slim application needs to abort
- * processing and return control flow to the outer PHP script.
+ * This class is used by Slim_Log to write log messages to a valid, writable
+ * resource handle (e.g. a file or STDERR).
  *
  * @package Slim
  * @author  Josh Lockhart
- * @since   1.0.0
+ * @since   1.6.0
  */
-class Slim_Exception_Stop extends Exception {}
+class Slim_LogFileWriter {
+    /**
+     * @var resource
+     */
+    protected $resource;
+
+    /**
+     * Constructor
+     * @param   resource    $resource
+     * @return  void
+     * @throws  InvalidArgumentException
+     */
+    public function __construct( $resource ) {
+        if ( !is_resource($resource) ) {
+            throw new InvalidArgumentException('Cannot create LogFileWriter. Invalid resource handle.');
+        }
+        $this->resource = $resource;
+    }
+
+    /**
+     * Write message
+     * @param   mixed       $message
+     * @return  int|false
+     */
+    public function write( $message ) {
+        return fwrite($this->resource, (string)$message . PHP_EOL);
+    }
+}

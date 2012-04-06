@@ -28,8 +28,12 @@ ActiveRecord\DateTime::$DEFAULT_FORMAT = 'd-M-Y';
 TwigView::$twigDirectory = 'vendor/Twig';
 TwigView::$twigOptions = array(
 		"debug" => true
-		//,'cache' => ROOT . '/cache/twig' // uncomment if folder permissions resolved
 );
+if(is_writable(ROOT . '/cache/twig')) {
+	TwigView::$twigOptions['cache'] = ROOT . '/cache/twig'; 
+}
+	
+	
 TwigView::$twigExtensions = array(
 		'Extension_Twig_Slim',
 		'Twig_Extension_Debug'

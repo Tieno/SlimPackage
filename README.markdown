@@ -6,7 +6,7 @@ SlimPackage is a bundling of the following projects
 * Controller: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
 
 ## Adjustments/hacks
-To get these three layers working together or for personal enjoyment the following adjustments/hacks were made:
+To get these three layers working together (or for personal enjoyment) the following adjustments/hacks were made:
 
 ### 1. To vendor/php-activerecord/lib/model.php
 to make PHPActiveRecord work with the Twig templating engine

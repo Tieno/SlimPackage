@@ -9,7 +9,7 @@ SlimPackage is a bundling of the following projects
 To get these three layers working together or for personal enjoyment the following adjustments/hacks were made:
 
 ### 1. To vendor/php-activerecord/lib/model.php
-	to make PHPActiveRecord work with the Twig templating engine
+to make PHPActiveRecord work with the Twig templating engine
 	<?php
 	/**
 	 * Determines if an attribute exists for this {@link Model}.

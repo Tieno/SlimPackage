@@ -1,12 +1,12 @@
 <?php
 require_once('app/config/registry.php');
-require_once('app/config/settings.php');
+require_once('app/config/appconfig.php');
 
 $app = new Slim(array(
 	'templates.path' => 'app/views/',
 	'debug' => true,
 	'view' => new TwigView(),
- 	'cookies.secret_key' => 'appsecretkey'
+ 	'cookies.secret_key' => md5('appsecretkey')
 ));
 $app->setName('appname');
 

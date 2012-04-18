@@ -1,15 +1,16 @@
 # SlimPackage
-SlimPackage is a bundling of the following projects
+SlimPackage is a bundling of the following components
 
 * Model: PHPActiveRecord ([kla/php-activerecord](https://github.com/kla/php-activerecord))
 * View: Twig ([fabpot/Twig](https://github.com/fabpot/Twig))
 * Controller: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
+* HTML/CSS/Javascript: Twitter Bootstrap ([twitter/bootstrap](https://github.com/twitter/bootstrap))
 
 ## Adjustments/hacks
 To get these three layers working together (or for personal enjoyment) the following adjustments/hacks were made:
 
 ### 1. To vendor/php-activerecord/lib/model.php
-to make PHPActiveRecord work with the Twig templating engine the __isset() function and set_timestamps() functions were changed
+to make PHPActiveRecord work with the Twig templating engine the __isset() function and set_timestamps() functions were changed.
 	
 	<?php
 	/**
@@ -46,7 +47,7 @@ to make PHPActiveRecord work with the Twig templating engine the __isset() funct
 	}
 
 ### 2. incorporated [Slim-Extras](https://github.com/codeguy/Slim-Extras)/TwigView.php
-This is an extension to get the Slim framework to work with Twig templating engine
+This is an extension to get the Slim framework working with Twig templating engine
 
 #### 2.1 To the TwigView extension the following adjustments were made
 

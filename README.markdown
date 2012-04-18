@@ -1,5 +1,10 @@
 # SlimPackage
+<<<<<<< HEAD
 SlimPackage is a bundling of the following components. It can be used as a starting point for small projects.
+
+=======
+SlimPackage is a bundling of the following components
+>>>>>>> 3ee633f719fe14022c6d6dfc3e80b5a7a6c32c17
 
 * Model: PHPActiveRecord ([kla/php-activerecord](https://github.com/kla/php-activerecord))
 * View: Twig ([fabpot/Twig](https://github.com/fabpot/Twig))

@@ -33,10 +33,10 @@
     
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
     
   </head>
 
@@ -47,7 +47,7 @@
         {% block navbar %}
 	          <a class="brand" href="#">{{ app.getName() }}</a>
 	          <ul class="nav">
-	            <li class="active"><a href="#">Home</a></li>
+	            <li class="active"><a href="#"><i class="icon icon-white icon-home"></i> Home</a></li>
 	          </ul>
 	          {% if currentUser %}
 	          	<p class="pull-right">Logged in as <a href="#">{{ currentUser.getFullName() }}</a></p>
@@ -117,7 +117,11 @@
       <hr>
 
       <footer>
-        <p>&copy; Company 2012</p>
+        <div class="row">
+          <div class="span4 offset1">
+            <p>&copy; Company 2012</p>
+          </div>
+        </div>
       </footer>        
       </div>
     </div>

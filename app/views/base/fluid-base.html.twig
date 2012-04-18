@@ -47,7 +47,7 @@
         {% block navbar %}
 	          <a class="brand" href="#">{{ app.getName() }}</a>
 	          <ul class="nav">
-	            <li class="active"><a href="#">Home</a></li>
+	            <li class="active"><a href="#"><i class="icon icon-white icon-home"></i> Home</a></li>
 	          </ul>
 	          {% if currentUser %}
 	          	<p class="pull-right">Logged in as <a href="#">{{ currentUser.getFullName() }}</a></p>
@@ -117,7 +117,11 @@
       <hr>
 
       <footer>
-        <p>&copy; Company 2012</p>
+        <div class="row">
+          <div class="span4 offset1">
+            <p>&copy; Company 2012</p>
+          </div>
+        </div>
       </footer>        
       </div>
     </div>

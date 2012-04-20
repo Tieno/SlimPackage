@@ -7,6 +7,7 @@ SlimPackage is a bundling of the following components. It can be used as a start
 * Controller: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
 * HTML/CSS/Javascript: Twitter Bootstrap ([twitter/bootstrap](https://github.com/twitter/bootstrap))
 
+
 ## Adjustments/hacks
 To get these components working together (or for personal enjoyment) the following adjustments/hacks were made:
 

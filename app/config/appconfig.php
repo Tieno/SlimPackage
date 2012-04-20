@@ -1,4 +1,7 @@
 <?php
+/**
+ * ACTIVERECORD SETTINGS
+ */
 ActiveRecord\Config::initialize(function($cfg)
 {
 	$models = 	'app/models';

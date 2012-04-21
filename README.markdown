@@ -7,6 +7,16 @@ SlimPackage is a bundling of the following components. It can be used as a start
 * Controller: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
 * HTML/CSS/Javascript: Twitter Bootstrap ([twitter/bootstrap](https://github.com/twitter/bootstrap))
 
+## Additions
+### 1. Twitter Bootstrap macros
+There are a coople of Twig templates in this package.
+
+* A Bootstrap Hero template
+* A Bootstrap Fluid template
+* Bootstrap macros in views/macros/bootstrap.twig
+	* alert
+	* label
+	* btn
 
 ## Adjustments/hacks
 To get these components working together (or for personal enjoyment) the following adjustments/hacks were made:

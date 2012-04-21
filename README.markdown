@@ -13,10 +13,13 @@ There are a coople of Twig templates in this package.
 
 * A Bootstrap Hero template
 * A Bootstrap Fluid template
+* Both of these templates have Slim flash capabilities
 * Bootstrap macros in views/macros/bootstrap.twig
 	* alert
 	* label
 	* btn
+
+If someone has any suggestions, please make a pull request.
 
 ## Adjustments/hacks
 To get these components working together (or for personal enjoyment) the following adjustments/hacks were made:

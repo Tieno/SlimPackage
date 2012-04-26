@@ -7,6 +7,7 @@
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
  * @version     1.6.0
+ * @package     Slim
  *
  * MIT LICENSE
  *
@@ -41,14 +42,9 @@
   *
   * @package    Slim
   * @author     Josh Lockhart
-  * @since      1.6.0
+  * @since      1.5.2
   */
-class Slim_Middleware_ContentTypes implements Slim_Middleware_Interface {
-    /**
-     * @var Slim
-     */
-    protected $app;
-
+class Slim_Middleware_ContentTypes extends Slim_Middleware {
     /**
      * @var array
      */
@@ -56,11 +52,9 @@ class Slim_Middleware_ContentTypes implements Slim_Middleware_Interface {
 
     /**
      * Constructor
-     * @param Slim $app
      * @param array $settings
      */
-    public function __construct( $app, $settings = array() ) {
-        $this->app = $app;
+    public function __construct( $settings = array() ) {
         $this->contentTypes = array_merge(array(
             'application/json' => array($this, 'parseJson'),
             'application/xml' => array($this, 'parseXml'),
@@ -71,15 +65,16 @@ class Slim_Middleware_ContentTypes implements Slim_Middleware_Interface {
 
     /**
      * Call
-     * @param   array $env
-     * @return  array[status, header, body]
+     * @return void
      */
-    public function call( &$env ) {
-        if ( isset($env['CONTENT_TYPE']) ) {
+    public function call() {
+        $mediaType = $this->app->request()->getMediaType();
+        if ( $mediaType ) {
+            $env = $this->app->environment();
             $env['slim.input_original'] = $env['slim.input'];
-            $env['slim.input'] = $this->parse($env['slim.input'], $env['CONTENT_TYPE']);
+            $env['slim.input'] = $this->parse($env['slim.input'], $mediaType);
         }
-        return $this->app->call($env);
+        $this->next->call();
     }
 
     /**
@@ -113,9 +108,10 @@ class Slim_Middleware_ContentTypes implements Slim_Middleware_Interface {
      */
     protected function parseJson( $input ) {
         if ( function_exists('json_decode') ) {
-            return json_decode($input, true);
-        } else {
-            return $input;
+            $result = json_decode($input, true);
+            if ( $result ) {
+                return $result;
+            }
         }
     }
 

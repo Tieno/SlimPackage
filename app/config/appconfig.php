@@ -4,7 +4,7 @@
  */
 ActiveRecord\Config::initialize(function($cfg)
 {
-	$models = 	'app/models';
+	$models = 	ROOT.'/app/models';
 	$cfg->set_model_directory($models);
 	try {
 		$cfg->set_connections(array(
@@ -26,7 +26,7 @@ ActiveRecord\DateTime::$DEFAULT_FORMAT = 'd-M-Y';
  * TWIG SETTINGS
  */
 
-TwigView::$twigDirectory = 'vendor/Twig';
+TwigView::$twigDirectory = ROOT.'/vendor/Twig';
 TwigView::$twigOptions = array(
 		"debug" => true
 );

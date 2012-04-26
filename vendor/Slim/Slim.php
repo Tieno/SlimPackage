@@ -7,6 +7,7 @@
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
  * @version     1.6.0
+ * @package     Slim
  *
  * MIT LICENSE
  *
@@ -30,6 +31,30 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+//This determines which errors are reported by PHP. By default, all
+//errors (including E_STRICT) are reported.
+error_reporting(E_ALL | E_STRICT);
+
+if ( !defined('MCRYPT_RIJNDAEL_256') ) {
+    define('MCRYPT_RIJNDAEL_256', 0);
+}
+if ( !defined('MCRYPT_MODE_CBC') ) {
+    define('MCRYPT_MODE_CBC', 0);
+}
+
+//This tells PHP to auto-load classes using Slim's autoloader; this will
+//only auto-load a class file located in the same directory as Slim.php
+//whose file name (excluding the final dot and extension) is the same
+//as its class name (case-sensitive). For example, "View.php" will be
+//loaded when Slim uses the "View" class for the first time.
+spl_autoload_register(array('Slim', 'autoload'));
+
+//PHP 5.3 will complain if you don't set a timezone. If you do not
+//specify your own timezone before requiring Slim, this tells PHP to use UTC.
+if ( @date_default_timezone_set(date_default_timezone_get()) === false ) {
+    date_default_timezone_set('UTC');
+}
+
 /**
  * Slim
  * @package Slim
@@ -37,11 +62,6 @@
  * @since   1.0.0
  */
 class Slim {
-    /**
-     * @const string
-     */
-    const VERSION = '1.6.0';
-
     /**
      * @var array[Slim]
      */
@@ -132,15 +152,14 @@ class Slim {
      */
     public function __construct( $userSettings = array() ) {
         //Setup Slim application
-        $this->settings = array_merge(self::getDefaultSettings(), $userSettings);
-        if ( $this->config('install_autoloader') ) {
-            spl_autoload_register(array('Slim', 'autoload'));
-        }
         $this->environment = Slim_Environment::getInstance();
         $this->request = new Slim_Http_Request($this->environment);
         $this->response = new Slim_Http_Response();
         $this->router = new Slim_Router($this->request, $this->response);
+        $this->settings = array_merge(self::getDefaultSettings(), $userSettings);
         $this->middleware = array($this);
+        $this->add(new Slim_Middleware_Flash());
+        $this->add(new Slim_Middleware_MethodOverride());
 
         //Determine application mode
         $this->getMode();
@@ -162,6 +181,9 @@ class Slim {
         $log->setEnabled($this->config('log.enabled'));
         $log->setLevel($this->config('log.level'));
         $this->environment['slim.log'] = $log;
+
+        //Set global error handler
+        set_error_handler(array('Slim', 'handleErrors'));
     }
 
     /**
@@ -199,8 +221,7 @@ class Slim {
      */
     public static function getDefaultSettings() {
         return array(
-            //Application
-            'install_autoloader' => true,
+            //Mode
             'mode' => 'development',
             //Debugging
             'debug' => true,
@@ -512,9 +533,9 @@ class Slim {
 
     /**
      * Get a reference to the Environment object
-     * @return array
+     * @return Slim_Environment
      */
-    public function &environment() {
+    public function environment() {
         return $this->environment;
     }
 
@@ -1040,89 +1061,21 @@ class Slim {
         }
     }
 
-    /***** STREAMING *****/
-
-    /**
-     * Stream file
-     *
-     * This method will immediately begin streaming the specified file
-     * to the HTTP client and exit the Slim application. By default,
-     * the file delivered to the HTTP client will use the basename
-     * of the specified file; you may override the file name
-     * using the second argument.
-     *
-     * @param   string  $path       The relative or absolute path to the file
-     * @param   array   $userOptions
-     * @return  void
-     */
-    public function streamFile( $path, $userOptions = array() ) {
-        $defaults = array('name' => basename($path));
-        $options = array_merge($defaults, $userOptions);
-        $this->response = new Slim_Http_Stream(new Slim_Stream_File($path, $options), $options);
-        $this->stop();
-    }
-
-    /**
-     * Stream data
-     *
-     * This method will immediately begin streaming the specified data
-     * to the HTTP client and exit the Slim application. You are encouraged
-     * to specify the name of the file delivered to the HTTP client using
-     * the second argument.
-     *
-     * @param   string  $data
-     * @param   array   $userOptions
-     * @return  void
-     */
-    public function streamData( $data, $userOptions = array() ) {
-        $this->response = new Slim_Http_Stream(new Slim_Stream_Data($data, $userOptions), $userOptions);
-        $this->stop();
-    }
-
-    /**
-     * Stream process output
-     *
-     * This method will immediately begin streaming the process output
-     * to the HTTP client and exit the Slim application. You are encouraged
-     * to specify the name of the file delivered to the HTTP client using
-     * the second argument. This method WILL NOT escape shell arguments for you.
-     *
-     * @param   string  $process       The process command. Escape shell arguments!
-     * @param   array   $userOptions
-     * @return  void
-     */
-    public function streamProcess( $process, $userOptions = array() ) {
-        $this->response = new Slim_Http_Stream(new Slim_Stream_Process($process, $userOptions), $userOptions);
-        $this->stop();
-    }
-
     /***** APPLICATION MIDDLEWARE *****/
 
     /**
      * Add middleware
      *
-     * This method inserts new middleware onto the application middleware stack.
-     * The argument shoud be the name of the middleware class. The class should already
-     * be included or required, else be discoverable by a registered autoloader.
+     * This method prepends new middleware to the application middleware stack.
+     * The argument must be an instance that subclasses Slim_Middleware.
      *
-     * @param   string $className The name of the middleware class
-     * @param   array  $settings  Key-Value array of settings for the middleware
+     * @param   Slim_Middleware
      * @return  void
-     * @throws  InvalidArgumentException If first argument is not a string
-     * @throws  InvalidArgumentException If class does not implement Slim_Middleware_Interface
-     * @throws  RuntimeException If class is not found
      */
-    public function add( $className, $settings = array() ) {
-        if ( !is_string($className) ) {
-            throw new InvalidArgumentException('Cannot add middleware; argument must be a string.');
-        }
-        if ( !class_exists($className) ) {
-            throw new RuntimeException('Cannot add middleware; class not found.');
-        }
-        if ( !in_array('Slim_Middleware_Interface', class_implements($className)) ) {
-            throw new InvalidArgumentException('Cannot add middleware; class does not implement Slim_Middleware_Interface.');
-        }
-        array_unshift($this->middleware, new $className($this->middleware[0], $settings));
+    public function add( Slim_Middleware $newMiddleware ) {
+        $newMiddleware->setApplication($this);
+        $newMiddleware->setNextMiddleware($this->middleware[0]);
+        array_unshift($this->middleware, $newMiddleware);
     }
 
     /***** RUN SLIM *****/
@@ -1137,15 +1090,14 @@ class Slim {
      * @return void
      */
     public function run() {
-        set_error_handler(array('Slim', 'handleErrors'));
-
         //Apply final outer middleware layers
-        $this->add('Slim_Middleware_Flash');
-        $this->add('Slim_Middleware_MethodOverride');
-        $this->add('Slim_Middleware_PrettyExceptions');
+        $this->add(new Slim_Middleware_PrettyExceptions());
+
+        //Invoke middleware and application stack
+        $this->middleware[0]->call();
 
         //Fetch status, header, and body
-        list($status, $header, $body) = $this->middleware[0]->call($this->environment);
+        list($status, $header, $body) = $this->response->finalize();
 
         //Send headers
         if ( headers_sent() === false ) {
@@ -1166,28 +1118,20 @@ class Slim {
         }
 
         //Send body
-        if ( is_string($body) ) {
-            echo $body;
-        } else {
-            $body->process();
-        }
-
-        restore_error_handler();
+        echo $body;
     }
 
     /**
      * Call
      *
      * Iterate each matching Route until all Routes are exhausted.
-     * Return an array of HTTP status, header, and body.
      *
-     * @param   array   $env    Key-value array of environment properties
-     * @return  array           [status, header, body]
+     * @return void
      */
-    public function call( &$env ) {
+    public function call() {
         try {
-            if ( isset($env['slim.flash']) ) {
-                $this->view()->setData('flash', $env['slim.flash']);
+            if ( isset($this->environment['slim.flash']) ) {
+                $this->view()->setData('flash', $this->environment['slim.flash']);
             }
             $this->applyHook('slim.before');
             ob_start();
@@ -1195,7 +1139,7 @@ class Slim {
             $dispatched = false;
             $httpMethodsAllowed = array();
             foreach ( $this->router as $route ) {
-                if ( $route->supportsHttpMethod($env['REQUEST_METHOD']) ) {
+                if ( $route->supportsHttpMethod($this->environment['REQUEST_METHOD']) ) {
                     try {
                         $this->applyHook('slim.before.dispatch');
                         $dispatched = $route->dispatch();
@@ -1218,16 +1162,13 @@ class Slim {
             $this->stop();
         } catch ( Slim_Exception_Stop $e ) {
             $this->response()->write(ob_get_contents());
-            return $this->response->finalize();
         } catch ( Slim_Exception_RequestSlash $e ) {
             $this->response->redirect($this->request->getPath() . '/', 301);
-            return $this->response->finalize();
         } catch ( Exception $e ) {
             if ( $this->config('debug') ){
                 throw $e;
             } else {
                 try { $this->error($e); } catch ( Slim_Exception_Stop $e ) {}
-                return $this->response->finalize();
             }
         }
     }

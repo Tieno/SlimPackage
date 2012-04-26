@@ -7,6 +7,7 @@
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
  * @version     1.6.0
+ * @package     Slim
  *
  * MIT LICENSE
  *
@@ -52,16 +53,11 @@
  * you are inherently limtied to 4 Kb. If you attempt to store
  * more than this amount, serialization will fail.
  *
- * @package    Slim
+ * @package     Slim
  * @author     Josh Lockhart
- * @since      1.6.0
+ * @since      1.5.2
  */
-class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
-    /**
-     * @var Slim
-     */
-    protected $app;
-
+class Slim_Middleware_SessionCookie extends Slim_Middleware {
     /**
      * @var array
      */
@@ -70,12 +66,10 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
     /**
      * Constructor
      *
-     * @param   Slim $app
      * @param   array $settings
      * @return  void
      */
-    public function __construct( $app, $settings = array() ) {
-        $this->app = $app;
+    public function __construct( $settings = array() ) {
         $this->settings = array_merge(array(
             'expires' => '20 minutes',
             'path' => '/',
@@ -94,13 +88,12 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
 
     /**
      * Call
-     * @param   array $env
-     * @return  array[status, header, body]
+     * @return void
      */
-    public function call( &$env ) {
-        $this->loadSession($env);
-        list($status, $header, $body) = $this->app->call($env);
-        return $this->saveSession($env, $status, $header, $body);
+    public function call() {
+        $this->loadSession();
+        $this->next->call();
+        $this->saveSession();
     }
 
     /**
@@ -108,10 +101,9 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
      * @param   array $env
      * @return  void
      */
-    protected function loadSession( &$env ) {
-        $req = new Slim_Http_Request($env);
+    protected function loadSession() {
         $value = Slim_Http_Util::decodeSecureCookie(
-            $req->cookies($this->settings['name']),
+            $this->app->request()->cookies($this->settings['name']),
             $this->settings['secret'],
             $this->settings['cipher'],
             $this->settings['cipher_mode']
@@ -125,13 +117,9 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
 
     /**
      * Save session
-     * @param   int     $status
-     * @param   array   $header
-     * @param   string  $body
-     * @return  array[status, header, body]
+     * @return  void
      */
-    protected function saveSession( &$env, $status, $header, $body ) {
-        $r = new Slim_Http_Response($body, $status, $header);
+    protected function saveSession() {
         $value = Slim_Http_Util::encodeSecureCookie(
             serialize($_SESSION),
             $this->settings['expires'],
@@ -140,9 +128,9 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
             $this->settings['cipher_mode']
         );
         if ( strlen($value) > 4096 ) {
-            fwrite($env['slim.errors'], 'WARNING! Slim_Middleware_SessionCookie data size is larger than 4KB. Content save failed.');
+            $this->app->getLog()->error('WARNING! Slim_Middleware_SessionCookie data size is larger than 4KB. Content save failed.');
         } else {
-            $r->setCookie($this->settings['name'], array(
+            $this->app->response()->setCookie($this->settings['name'], array(
                 'value' => $value,
                 'domain' => $this->settings['domain'],
                 'path' => $this->settings['path'],
@@ -151,6 +139,5 @@ class Slim_Middleware_SessionCookie implements Slim_Middleware_Interface {
                 'httponly' => $this->settings['httponly']
             ));
         }
-        return $r->finalize();
     }
 }

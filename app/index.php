@@ -1,9 +1,9 @@
 <?php
-require_once('app/config/registry.php');
-require_once('app/config/appconfig.php');
+require_once(ROOT.'/app/config/registry.php');
+require_once(ROOT.'/app/config/appconfig.php');
 
 $app = new Slim(array(
-	'templates.path' => 'app/views/',
+	'templates.path' => ROOT.'/app/views/',
 	'debug' => true,
 	'view' => new TwigView(),
  	'cookies.secret_key' => md5('appsecretkey')
@@ -52,7 +52,7 @@ $auth = function () use ($app, $currentUser) {
  */
 $resourceUri = $_SERVER['REQUEST_URI'];
 $rootUri = $app->request()->getRootUri();
-$assetUri = $rootUri . '/web';
+$assetUri = $rootUri;
 $app->view()->appendData(
 		array('currentUser' => $currentUser,
 				'app' => $app,
@@ -61,7 +61,7 @@ $app->view()->appendData(
 				'resourceUri' => $resourceUri
 ));
 
-foreach(glob('app/controllers/*.php') as $router) {
+foreach(glob(ROOT.'/app/controllers/*.php') as $router) {
 	include $router;
 }
 

@@ -7,6 +7,7 @@
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
  * @version     1.6.0
+ * @package     Slim
  *
  * MIT LICENSE
  *
@@ -42,14 +43,9 @@
   *
   * @package    Slim
   * @author     Josh Lockhart
-  * @since      1.6.0
+  * @since      1.5.2
   */
-class Slim_Middleware_MethodOverride implements Slim_Middleware_Interface {
-    /**
-     * @var Slim
-     */
-    protected $app;
-
+class Slim_Middleware_MethodOverride extends Slim_Middleware {
     /**
      * @var array
      */
@@ -61,8 +57,7 @@ class Slim_Middleware_MethodOverride implements Slim_Middleware_Interface {
      * @param   array   $settings
      * @return  void
      */
-    public function __construct( $app, $settings = array() ) {
-        $this->app = $app;
+    public function __construct( $settings = array() ) {
         $this->settings = array_merge(array('key' => '_METHOD'), $settings);
     }
 
@@ -78,8 +73,14 @@ class Slim_Middleware_MethodOverride implements Slim_Middleware_Interface {
      * @param   array $env
      * @return  array[status, header, body]
      */
-    public function call( &$env ) {
-        if ( isset($env['REQUEST_METHOD']) && $env['REQUEST_METHOD'] === 'POST' ) {
+    public function call() {
+        $env = $this->app->environment();
+        if ( isset($env['X_HTTP_METHOD_OVERRIDE']) ) {
+            // Header commonly used by Backbone.js and others
+            $env['slim.method_override.original_method'] = $env['REQUEST_METHOD'];
+            $env['REQUEST_METHOD'] = strtoupper($env['X_HTTP_METHOD_OVERRIDE']);
+        } else if ( isset($env['REQUEST_METHOD']) && $env['REQUEST_METHOD'] === 'POST' ) {
+            // HTML Form Override
             $req = new Slim_Http_Request($env);
             $method = $req->post($this->settings['key']);
             if ( $method ) {
@@ -87,6 +88,6 @@ class Slim_Middleware_MethodOverride implements Slim_Middleware_Interface {
                 $env['REQUEST_METHOD'] = strtoupper($method);
             }
         }
-        return $this->app->call($env);
+        $this->next->call();
     }
 }

@@ -1,6 +1,7 @@
 <?php
-require_once(ROOT.'/app/config/registry.php');
-require_once(ROOT.'/app/config/appconfig.php');
+require ROOT.'/vendor/Slim/Slim.php';
+require ROOT.'/app/config/registry.php';
+require ROOT.'/app/config/appconfig.php';
 
 $app = new Slim(array(
 	'templates.path' => ROOT.'/app/views/',

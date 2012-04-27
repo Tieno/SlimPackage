@@ -1,24 +1,30 @@
 # SlimPackage
 SlimPackage is a bundling of the following components. It can be used as a starting point for small projects.
 
+* **Model**: PHPActiveRecord ([kla/php-activerecord](https://github.com/kla/php-activerecord))
+* **View**: Twig ([fabpot/Twig](https://github.com/fabpot/Twig))
+* **Controller**: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
+* **HTML/CSS/Javascript**: Twitter Bootstrap ([twitter/bootstrap](https://github.com/twitter/bootstrap))
 
-* Model: PHPActiveRecord ([kla/php-activerecord](https://github.com/kla/php-activerecord))
-* View: Twig ([fabpot/Twig](https://github.com/fabpot/Twig))
-* Controller: Slim ([codeguy/Slim](https://github.com/codeguy/Slim))
-* HTML/CSS/Javascript: Twitter Bootstrap ([twitter/bootstrap](https://github.com/twitter/bootstrap))
+##Structure
+* **app/** contains all files for your app: `models/`, `controllers/`, `views/` (Twig templates) and your `config/` (configuration). Slim is instantiated in `app/index.php`
+* **vendor/** contains the libraries for your application.
+* **web/** is for your assets: js/css/img/less files. It should be the only folder publically available. `web/index.php` bootstraps the rest of the application.
+
 
 ## Additions
 ### 1. Twitter Bootstrap macros
 There are a coople of Twig templates in this package.
 
-* A Bootstrap Hero template
-* A Bootstrap Fluid template
+* A Bootstrap Hero template: `base/hero.html.twig`
+* A Bootstrap Fluid template: `base/fluid.html.twig`
 * Both of these templates have Slim flash capabilities
-* Bootstrap macros in views/macros/bootstrap.twig
+* A Bootstrap login form template: `/login.html.twig`
+* Bootstrap macros in `views/macros/bootstrap.twig`
 	* alert
 	* label
 	* btn
-
+	
 If someone has any suggestions, please make a pull request.
 
 ## Adjustments/hacks

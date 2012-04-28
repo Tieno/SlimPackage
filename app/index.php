@@ -1,5 +1,4 @@
 <?php
-require ROOT.'/vendor/Slim/Slim.php';
 require ROOT.'/app/config/registry.php';
 require ROOT.'/app/config/appconfig.php';
 
@@ -28,6 +27,7 @@ if($userid = $app->getEncryptedCookie('user_id')) {
 } else {
 	$currentUser = null;
 }
+
 
 /**
  * authentication middleware for is in routes you want protected
@@ -66,34 +66,9 @@ foreach(glob(ROOT.'/app/controllers/*.php') as $router) {
 	include $router;
 }
 
-
-//GET route
 $app->get('/', function () use ($app) {
 	
     $app->render('slim.html.twig');
 });
 
-
-
-//POST route
-$app->post('/post', function () {
-    echo 'This is a POST route';
-});
-
-//PUT route
-$app->put('/put', function () {
-    echo 'This is a PUT route';
-});
-
-//DELETE route
-$app->delete('/delete', function () {
-    echo 'This is a DELETE route';
-});
-
-/**
- * Step 4: Run the Slim application
- *
- * This method should be called last. This is responsible for executing
- * the Slim application using the settings and routes defined above.
- */
 $app->run();

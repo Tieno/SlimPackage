@@ -1,4 +1,5 @@
 <?php
-require_once ROOT.'/vendor/php-activerecord/ActiveRecord.php';
-require_once ROOT.'/vendor/Slim/View.php';
-require_once ROOT.'/vendor/Slim-Extras/TwigView.php';
+require ROOT.'/vendor/Slim/Slim/Slim.php';
+require ROOT.'/vendor/php-activerecord/ActiveRecord.php';
+require ROOT.'/vendor/Slim/Slim/View.php';
+require ROOT.'/vendor/Slim-Extras/Views/TwigView.php';

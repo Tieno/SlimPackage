@@ -9,23 +9,26 @@ SlimPackage is a bundling of the following components. It can be used as a start
 ##Structure
 * **app/** contains all files for your app: `models/`, `controllers/`, `views/` (Twig templates) and your `config/` (configuration). Slim is instantiated in `app/index.php`
 * **vendor/** contains the libraries for your application.
-* **web/** is for your assets: js/css/img/less files. It should be the only folder publically available. `web/index.php` bootstraps the rest of the application.
+* **web/** is for your assets: js/css/img/less files. It should be the only folder publically available so your domain should point to this folder. `web/index.php` bootstraps the rest of the application.
 
 
 ## Additions
-### 1. Twitter Bootstrap macros
-There are a coople of Twig templates in this package.
+### Twitter Bootstrap - Twig
+If someone has any suggestions, please make a pull request.
 
-* A Bootstrap Hero template: `base/hero.html.twig`
-* A Bootstrap Fluid template: `base/fluid.html.twig`
-* Both of these templates have Slim flash capabilities
-* A Bootstrap login form template: `/login.html.twig`
+#### Macros
 * Bootstrap macros in `views/macros/bootstrap.twig`
 	* alert
 	* label
 	* btn
-	
-If someone has any suggestions, please make a pull request.
+
+#### Templates
+There are a couple of Twig templates in this package. They are included for common use.
+
+* A Bootstrap Hero template: `base/hero.html.twig`
+* A Bootstrap Fluid template: `base/fluid.html.twig`
+	* Both of these templates have Slim flash capabilities. The flash template is located in `base/components/flash.twig`
+* A Bootstrap login form template: `/login.html.twig`
 
 ## Adjustments/hacks
 To get these components working together (or for personal enjoyment) the following adjustments/hacks were made:

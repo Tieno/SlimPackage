@@ -1,9 +1,9 @@
 [submodule "vendor/Slim"]
 	path = vendor/Slim
-url=https://Tieno@github.com/Tieno/Slim.git
+url=https://Tieno@github.com/codeguy/Slim.git
 [submodule "vendor/Twig"]
 	path = vendor/Twig
-url=https://Tieno@github.com/Tieno/Twig.git
+url=https://Tieno@github.com/fabpot/Twig.git
 [submodule "vendor/php-activerecord"]
 	path = vendor/php-activerecord
 	url = https://Tieno@github.com/Tieno/php-activerecord.git

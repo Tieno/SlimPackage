@@ -4,3 +4,9 @@
 [submodule "vendor/Slim-Extras"]
 	path = vendor/Slim-Extras
 	url = https://Tieno@github.com/Tieno/Slim-Extras.git
+[submodule "vendor/Slim"]
+	path = vendor/Slim
+	url = git://github.com/codeguy/Slim.git
+[submodule "vendor/Twig"]
+	path = vendor/Twig
+	url = git://github.com/fabpot/Twig.git

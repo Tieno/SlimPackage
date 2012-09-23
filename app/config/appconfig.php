@@ -8,7 +8,7 @@ ActiveRecord\Config::initialize(function($cfg)
 	$cfg->set_model_directory($models);
 	try {
 		$cfg->set_connections(array(
-			'development' => 'mysql://root:durnez10@localhost/comm_sen?charset=utf8'
+			'development' => 'mysql://user:pass@localhost/dbname?charset=utf8'
 
 		));
 
@@ -26,21 +26,22 @@ ActiveRecord\DateTime::$DEFAULT_FORMAT = 'd-M-Y';
  * TWIG SETTINGS
  */
 
-TwigView::$twigDirectory = ROOT.'/vendor/Twig/lib/Twig';
-TwigView::$twigOptions = array(
+
+\Slim\Extras\Views\Twig::$twigDirectory = ROOT.'/vendor/Twig/lib/Twig';
+\Slim\Extras\Views\Twig::$twigOptions = array(
 		"debug" => true
 );
 if(is_writable(ROOT . '/cache/twig')) {
-	TwigView::$twigOptions['cache'] = ROOT . '/cache/twig'; 
+	\Slim\Extras\Views\Twig::$twigOptions['cache'] = ROOT . '/cache/twig'; 
 }
 	
 	
-TwigView::$twigExtensions = array(
+\Slim\Extras\Views\Twig::$twigExtensions = array(
 		'Twig_Extensions_Slim',
 		'Twig_Extension_Debug',
 		'Twig_Extensions_Markdown'
 );
 
-TwigView::$twigFunctions =  array(
+\Slim\Extras\Views\Twig::$twigFunctions =  array(
 		
 );

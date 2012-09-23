@@ -1,12 +1,20 @@
 <?php
 require ROOT.'/app/config/registry.php';
+\Slim\Slim::registerAutoloader();
 require ROOT.'/app/config/appconfig.php';
 
-$app = new Slim(array(
+$app = new \Slim\Slim(array(
 	'templates.path' => ROOT.'/app/views/',
-	'debug' => true,
-	'view' => new TwigView(),
- 	'cookies.secret_key' => md5('appsecretkey')
+	'debug' => false,
+	'view' => new \Slim\Extras\Views\Twig(),
+ 	'cookies.secret_key' => md5('appsecretkey'),
+
+	'log.enabled'    => false,
+	'log.writer' => new \Slim\Extras\Log\DateTimeFileWriter(array(
+				'path' => './logs',
+				'name_format' => 'Y-m-d',
+				'message_format' => '%label% - %date% - %message%'
+		))
 ));
 $app->setName('appname');
 
